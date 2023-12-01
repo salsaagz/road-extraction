@@ -11,17 +11,49 @@
       ]
     },
     {
+      "cell_type": "markdown",
+      "source": [
+        "## **Connect To Drive**"
+      ],
+      "metadata": {
+        "id": "WFfW6Z4vvZON"
+      },
+      "id": "WFfW6Z4vvZON"
+    },
+    {
       "cell_type": "code",
       "source": [
         "from google.colab import drive\n",
         "drive.mount('/content/drive')"
       ],
       "metadata": {
-        "id": "4Qn4onbhUOSm"
+        "id": "4Qn4onbhUOSm",
+        "outputId": "989995c4-c50f-403c-ec61-bee7eab4a55e",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
       },
       "id": "4Qn4onbhUOSm",
-      "execution_count": null,
-      "outputs": []
+      "execution_count": 1,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Mounted at /content/drive\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## **Create Training, Testing, & Validation Data**"
+      ],
+      "metadata": {
+        "id": "TOEc2nJsvdsW"
+      },
+      "id": "TOEc2nJsvdsW"
     },
     {
       "cell_type": "code",
@@ -34,19 +66,19 @@
         "\n",
         "#Shapefiles merepresentasikan data training chip (training, validasi & testing)\n",
         "from google.colab import drive\n",
-        "chips_test = gp.GeoDataFrame.from_file('/content/drive/MyDrive/Skripsi/GoogleColabData/SHP_IDN_PROV_C.shp')\n",
-        "chips_validation = gp.GeoDataFrame.from_file('/content/drive/MyDrive/Skripsi/GoogleColabData/SHP_IDN_PROV_C.shp')\n",
-        "chips_training = gp.GeoDataFrame.from_file('/content/drive/MyDrive/Skripsi/GoogleColabData/SHP_IDN_PROV_C.shp')\n",
+        "chips_test = gdal.Open('/content/drive/MyDrive/GEE_Export/Testing_Sentinel2.tif')\n",
+        "chips_validation = gdal.Open('/content/drive/MyDrive/GEE_Export/Validation_Spn.tif')\n",
+        "chips_training = gdal.Open('/content/drive/MyDrive/GEE_Export/Training_Spn.tif')\n",
         "\n",
         "#Raster untuk pelatihan\n",
-        "ds_input = gdal.Open('/content/drive/MyDrive/Skripsi/GoogleColabData/tif/sentinel2-0000000000-0000000000.tif')\n",
-        "ds_target = gdal.Open('/content/drive/MyDrive/Skripsi/GoogleColabData/tif/sentinel2-0000000000-0000026880.tif')\n",
+        "ds_input = gdal.Open('[input]') #jalan with label\n",
+        "ds_target = gdal.Open('[target]') #jalan without label\n",
         "#ds_input = gdal.Open('F:/MosaicosBlob/mosaic_RGB_2.tif')\n",
         "#ds_target = gdal.Open('F:/MosaicosTrabalhados/chips_separation/rasters/estradas_buffered.tif')\n",
         "\n",
-        "#Memulihkan chip dalam format json untuk memfasilitasi akses informasi ke kerangka data\n",
-        "def getFeatures(gdf):\n",
-        "    return json.loads(gdf.to_json())[\"features\"]\n",
+        "#Extract into json to get data information\n",
+        "def getFeatures(gdal):\n",
+        "    return json.loads(gdal.to_json())[\"features\"]\n",
         "\n",
         "training = getFeatures(chips_training)\n",
         "validation = getFeatures(chips_validation)\n",
@@ -69,9 +101,10 @@
         "\n",
         "    for i in tqdm(range(0, set_size)):\n",
         "\n",
-        "        xl = chips_set[i][\"geometry\"][\"coordinates\"][0][0][0]\n",
+        "        #create bounding box\n",
+        "        xl = chips_set[i][\"geometry\"][\"coordinates\"][0][0][0] #bottom left\n",
         "        yl = chips_set[i][\"geometry\"][\"coordinates\"][0][0][1]\n",
-        "        #xr = chips_set[i][\"geometry\"][\"coordinates\"][0][1][0]\n",
+        "        #xr = chips_set[i][\"geometry\"][\"coordinates\"][0][1][0] #bottom right\n",
         "        #yr = chips_set[i][\"geometry\"][\"coordinates\"][0][1][1]\n",
         "\n",
         "        try:\n",
@@ -85,12 +118,42 @@
         "chips_separation(validation, \"validation\")\n",
         "chips_separation(test, \"test\")"
       ],
-      "outputs": [],
-      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "error",
+          "ename": "AttributeError",
+          "evalue": "ignored",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mAttributeError\u001b[0m                            Traceback (most recent call last)",
+            "\u001b[0;32m<ipython-input-4-5a373cd0d1fe>\u001b[0m in \u001b[0;36m<cell line: 23>\u001b[0;34m()\u001b[0m\n\u001b[1;32m     21\u001b[0m     \u001b[0;32mreturn\u001b[0m \u001b[0mjson\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mloads\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mgdal\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mto_json\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m\"features\"\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     22\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 23\u001b[0;31m \u001b[0mtraining\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mgetFeatures\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mchips_training\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     24\u001b[0m \u001b[0mvalidation\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mgetFeatures\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mchips_validation\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     25\u001b[0m \u001b[0mtest\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mgetFeatures\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mchips_test\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m<ipython-input-4-5a373cd0d1fe>\u001b[0m in \u001b[0;36mgetFeatures\u001b[0;34m(gdal)\u001b[0m\n\u001b[1;32m     19\u001b[0m \u001b[0;31m#Memulihkan chip dalam format json untuk memfasilitasi akses informasi ke kerangka data\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     20\u001b[0m \u001b[0;32mdef\u001b[0m \u001b[0mgetFeatures\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mgdal\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 21\u001b[0;31m     \u001b[0;32mreturn\u001b[0m \u001b[0mjson\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mloads\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mgdal\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mto_json\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m\"features\"\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     22\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     23\u001b[0m \u001b[0mtraining\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mgetFeatures\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mchips_training\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.10/dist-packages/osgeo/gdal.py\u001b[0m in \u001b[0;36m<lambda>\u001b[0;34m(self, name)\u001b[0m\n\u001b[1;32m   2285\u001b[0m     \u001b[0;32mfor\u001b[0m \u001b[0m_s\u001b[0m \u001b[0;32min\u001b[0m \u001b[0;34m[\u001b[0m\u001b[0mMajorObject\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   2286\u001b[0m         \u001b[0m__swig_getmethods__\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mupdate\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mgetattr\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0m_s\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m'__swig_getmethods__'\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m{\u001b[0m\u001b[0;34m}\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-> 2287\u001b[0;31m     \u001b[0m__getattr__\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;32mlambda\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mname\u001b[0m\u001b[0;34m:\u001b[0m \u001b[0m_swig_getattr\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mDataset\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mname\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m   2288\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   2289\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0m__init__\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m*\u001b[0m\u001b[0margs\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkwargs\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.10/dist-packages/osgeo/gdal.py\u001b[0m in \u001b[0;36m_swig_getattr\u001b[0;34m(self, class_type, name)\u001b[0m\n\u001b[1;32m     78\u001b[0m     \u001b[0;32mif\u001b[0m \u001b[0mmethod\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     79\u001b[0m         \u001b[0;32mreturn\u001b[0m \u001b[0mmethod\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 80\u001b[0;31m     \u001b[0;32mraise\u001b[0m \u001b[0mAttributeError\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"'%s' object has no attribute '%s'\"\u001b[0m \u001b[0;34m%\u001b[0m \u001b[0;34m(\u001b[0m\u001b[0mclass_type\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m__name__\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mname\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     81\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     82\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;31mAttributeError\u001b[0m: 'Dataset' object has no attribute 'to_json'"
+          ]
+        }
+      ],
+      "execution_count": 4,
       "metadata": {
-        "id": "ed90ef8a"
+        "id": "ed90ef8a",
+        "outputId": "fe314eb6-50d7-497b-b6b2-af7f08001b3e",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 391
+        }
       },
       "id": "ed90ef8a"
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## **Export Data Into TensorFlow Record**"
+      ],
+      "metadata": {
+        "id": "A885gJoQw8zU"
+      },
+      "id": "A885gJoQw8zU"
     },
     {
       "cell_type": "code",
@@ -216,7 +279,7 @@
           "execution_count": 17
         }
       ],
-      "execution_count": 17,
+      "execution_count": null,
       "metadata": {
         "collapsed": true,
         "jupyter": {
@@ -246,7 +309,7 @@
         "tb.stop()"
       ],
       "outputs": [],
-      "execution_count": 18,
+      "execution_count": null,
       "metadata": {
         "collapsed": true,
         "jupyter": {
