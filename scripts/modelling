@@ -11,8 +11,15 @@
       ]
     },
     {
+      "cell_type": "markdown",
+      "source": [],
+      "metadata": {
+        "id": "gqLwawbTxgJH"
+      }
+    },
+    {
       "cell_type": "code",
-      "execution_count": 1,
+      "execution_count": null,
       "metadata": {
         "id": "HLQ_BG8LnQ6z"
       },
@@ -31,6 +38,7 @@
         "from tensorflow.keras import backend as K\n",
         "from tensorflow.keras import callbacks\n",
         "\n",
+        "## Parsing Data into Float\n",
         "def parse_data(data):\n",
         "\n",
         "    features_for_data = {\n",
@@ -51,6 +59,8 @@
         "\n",
         "    return stacked_data[:,:,:3], stacked_ref[:,:,:]\n",
         "\n",
+        "# Creates a list of TFRecordDataset objects by mapping the parse_data function to each file.\n",
+        "# The function returns the TFRecord datasets for training, validation, and testing.\n",
         "def get_data():\n",
         "\n",
         "    training_files = \"./training_buffered_2x.tfrecord\"\n",
@@ -70,8 +80,17 @@
       ]
     },
     {
+      "cell_type": "markdown",
+      "source": [
+        "## **Data Augmentation**"
+      ],
+      "metadata": {
+        "id": "E3yxk9wAyMAN"
+      }
+    },
+    {
       "cell_type": "code",
-      "execution_count": 2,
+      "execution_count": null,
       "metadata": {
         "gather": {
           "logged": 1620237269002
@@ -135,8 +154,17 @@
       ]
     },
     {
+      "cell_type": "markdown",
+      "source": [
+        "## **Modelling**"
+      ],
+      "metadata": {
+        "id": "uKwa5CEmyR9w"
+      }
+    },
+    {
       "cell_type": "code",
-      "execution_count": 3,
+      "execution_count": null,
       "metadata": {
         "gather": {
           "logged": 1620237274718
@@ -278,7 +306,7 @@
     },
     {
       "cell_type": "code",
-      "execution_count": 6,
+      "execution_count": null,
       "metadata": {
         "id": "omvXI_7vnQ66",
         "outputId": "1d7b6173-6ed5-4cdf-9bf9-0a49f98f0a1d",
@@ -347,7 +375,7 @@
     },
     {
       "cell_type": "code",
-      "execution_count": 7,
+      "execution_count": null,
       "metadata": {
         "id": "G020CZ9_nQ66"
       },
@@ -358,7 +386,7 @@
     },
     {
       "cell_type": "code",
-      "execution_count": 8,
+      "execution_count": null,
       "metadata": {
         "id": "gwZ48c4CnQ67",
         "outputId": "0fec3f41-6e92-4b18-dee0-2ad9ecb9e67c",
@@ -418,7 +446,7 @@
     },
     {
       "cell_type": "code",
-      "execution_count": 9,
+      "execution_count": null,
       "metadata": {
         "id": "p40KpXFknQ67",
         "colab": {
@@ -447,7 +475,7 @@
     },
     {
       "cell_type": "code",
-      "execution_count": 10,
+      "execution_count": null,
       "metadata": {
         "id": "r77xBDwPnQ68",
         "outputId": "43d45a88-4f49-42dd-ead2-5fa781fedabc",
