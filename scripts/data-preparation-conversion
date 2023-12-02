@@ -34,7 +34,7 @@
         }
       },
       "id": "4Qn4onbhUOSm",
-      "execution_count": 1,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "stream",
@@ -64,15 +64,15 @@
         "from tqdm import tqdm\n",
         "import os\n",
         "\n",
-        "#Shapefiles merepresentasikan data training chip (training, validasi & testing)\n",
+        "#Shapefiles data training chip (training, validasi & testing)\n",
         "from google.colab import drive\n",
-        "chips_test = gdal.Open('/content/drive/MyDrive/GEE_Export/Testing_Sentinel2.tif')\n",
-        "chips_validation = gdal.Open('/content/drive/MyDrive/GEE_Export/Validation_Spn.tif')\n",
-        "chips_training = gdal.Open('/content/drive/MyDrive/GEE_Export/Training_Spn.tif')\n",
+        "chips_test = gp.GeoDataFrame.from_file('/path/of/shp/file.shp')\n",
+        "chips_validation = gp.GeoDataFrame.from_file('/path/of/shp/file.shp')\n",
+        "chips_training = gp.GeoDataFrame.from_file('/path/of/shp/file.shp')\n",
         "\n",
         "#Raster untuk pelatihan\n",
-        "ds_input = gdal.Open('[input]') #jalan with label\n",
-        "ds_target = gdal.Open('[target]') #jalan without label\n",
+        "ds_input = gdal.Open('[path/of/input.tif]') #jalan with label\n",
+        "ds_target = gdal.Open('[path/of/target.tif]') #jalan without label\n",
         "#ds_input = gdal.Open('F:/MosaicosBlob/mosaic_RGB_2.tif')\n",
         "#ds_target = gdal.Open('F:/MosaicosTrabalhados/chips_separation/rasters/estradas_buffered.tif')\n",
         "\n",
@@ -95,6 +95,8 @@
         "# print(xr)\n",
         "# print(yr)\n",
         "\n",
+        "\n",
+        "# Zonal Statistics\n",
         "def chips_separation(chips_set, set_name):\n",
         "\n",
         "    set_size = len(chips_set)\n",
@@ -134,7 +136,7 @@
           ]
         }
       ],
-      "execution_count": 4,
+      "execution_count": null,
       "metadata": {
         "id": "ed90ef8a",
         "outputId": "fe314eb6-50d7-497b-b6b2-af7f08001b3e",
